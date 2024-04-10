@@ -43,7 +43,7 @@ FUNCTIONS = ["SIN", "COS", "TAN", "EXP", "LOG"]
 
 VARIABLE_ALPHABET = [chr(x) for x in range(ord('a'), ord('z')+1) if chr(x) not in ["e", "i"]]
 
-CLASSIC_CONSTANTS = ["pi", "I", "g","e", "zoo"]
+CLASSIC_CONSTANTS = ["PI", "I", "g","e", "zoo"]
 
 literal_atomics = list(drange(-10, 10, "0.5"))
 
@@ -414,7 +414,7 @@ def parallel_dataset_generation(total_size, chunk_size=10, timeout=8, max_retrie
     return dataset
 
 if __name__ == "__main__":
-    desired_dataset_size = 1000  # Adjust as needed
-    generated_dataset = parallel_dataset_generation(desired_dataset_size)
+    desired_dataset_size = 1000000  
+    generated_dataset = parallel_dataset_generation(desired_dataset_size,  chunk_size=200)
     with open("math_datagen.json", "w") as f:
         json.dump(generated_dataset, f, indent=4)
