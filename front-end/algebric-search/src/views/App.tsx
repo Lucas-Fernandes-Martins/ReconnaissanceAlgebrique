@@ -10,10 +10,11 @@ function App() {
 
   const data = {'first_equation':firstEquation, 'second_equation':secondEquation}
   console.log(data)
+  //fetch('http://localhost:8000/get_score'
   const checkSimilarity = async () => {
     try {
       // Make GET request to API endpoint
-      const response = await fetch('http://localhost:8000/get_score', {
+      const response = await fetch('https://deployed-backend-ra.onrender.com/get_score', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
