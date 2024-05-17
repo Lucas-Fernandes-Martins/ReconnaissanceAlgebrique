@@ -6,7 +6,7 @@ from difflib import SequenceMatcher
 
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
-from zss import Node
+from zss import Node, simple_distance
 
 COMMUTATIVE_FUNCTIONS = [Mul, Add]
 
@@ -137,3 +137,153 @@ def get_bert_embeddings(expr, model, tokenizer):
 
 def get_text_similarity(embeddings1, embeddings2):
     return cosine_similarity([embeddings1], [embeddings2])[0][0]
+
+def load_expr(expr):
+    symbolic = simplify_latex_expression(expr)
+    tree = build_tree(symbolic)
+    
+    return tree
+
+def get_score(str1, str2):
+    tree1 = load_expr(str1)
+    tree2 = load_expr(str2)
+    return simple_distance(tree1, tree2)
+
+# def give_feedback(answer, expected):
+#     tree1 = load_expr(answer)
+#     tree2 = load_expr(expected)
+#     frontier1 = [tree1]
+#     frontier2 = [tree2]
+#     feedback = []
+#     #Breath-first traversal
+#     while len(frontier1) > 0 and len(frontier2) > 0:
+#         print("Here!")
+#         tree1 = frontier1.pop(0)
+#         tree2 = frontier2.pop(0)
+
+#         if len(tree1.children) == 0:
+#             feedback.append("You forgot terms!")
+
+#         if len(tree2.children) == 0:
+#             feedback.append("You have extra terms!")
+
+#         for child in tree1.children:
+#             frontier1.append(child)
+        
+#         for child in tree2.children:
+#             frontier2.append(child)
+
+#         if tree1.label == Mul and type(tree2.label) is not str and tree2.label.is_symbol:
+#             if tree2.children[0].label == '-1':
+#                 feedback.append("You got one sign wrong!")
+
+#         if tree2.label == Mul and tree1.label.is_symbol:
+#             if tree1.children[0].label == '-1':
+#                 feedback.append("You got one sign wrong!")
+            
+
+#     return feedback
+
+
+def detect_terms(answer, expected, verbose=False):
+
+    def is_number(s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+
+    tree1 = load_expr(answer)
+    tree2 = load_expr(expected)
+
+    #Traverse first tree
+
+    frontier = [tree1]
+    n_terms_1 = 0
+    current = None
+    while(len(frontier) > 0):
+        current = frontier.pop(0)
+
+        if type(current.label) is str and not is_number(current.label):
+            print(current.label)
+            n_terms_1 += 1
+        frontier.extend(current.children)
+
+    print("=================")
+
+    frontier = [tree2]
+    n_terms_2 = 0
+    current = None
+
+    while(len(frontier) > 0):
+        current = frontier.pop(0)
+
+        if type(current.label) is str and not is_number(current.label):
+            print(current.label)
+            n_terms_2 += 1
+        frontier.extend(current.children)
+
+    if verbose:
+        print(f"------Terms expected: {n_terms_1}")
+        print(f"------Terms received: {n_terms_2}")
+
+    return n_terms_1 == n_terms_2
+        
+
+
+
+
+    
+    
+
+
+
+def give_feedback(answer, expected):
+    # Assuming you have a function called load_expr that correctly loads expressions into tree structures
+    
+    tree1 = load_expr(answer)
+    tree2 = load_expr(expected)
+    frontier1 = [tree1]
+    frontier2 = [tree2]
+    feedback = []
+    n_wrong_terms = 0
+    n_terms_1 = 0
+    n_terms_2 = 0
+    
+    # Breath-first traversal
+    while frontier1 or frontier2:
+        node1 = frontier1.pop(0)
+        node2 = frontier2.pop(0)
+
+        if type(node1.label) is str:
+            print(node1.label)
+            n_terms_1 += 1
+        
+        if type(node2.label) is str:
+            print(node2.label)
+            n_terms_2 += 1
+
+        print("============")
+
+        if node1.label != node2.label:
+            n_wrong_terms += 1
+
+        if node1.label == "Mul":
+            if node1.children[0].label == '-1' and node2.children[0].label != '-1':
+                feedback.append("You got one sign wrong!")
+            elif node1.children[0].label != '-1' and node2.children[0].label == '-1':
+                feedback.append("You got one sign wrong!")
+
+        # Add children to frontiers
+        frontier1.extend(node1.children)
+        frontier2.extend(node2.children)
+
+    if n_terms_1 > n_terms_2:
+        feedback.append("You forgot terms!")
+    elif n_terms_1 < n_terms_2:
+        feedback.append("You have added extra terms!")
+
+    feedback.append(n_wrong_terms)
+    return feedback
+        

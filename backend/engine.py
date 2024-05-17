@@ -7,6 +7,7 @@ from difflib import SequenceMatcher
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from zss import Node, simple_distance
+import math
 
 COMMUTATIVE_FUNCTIONS = [Mul, Add]
 
@@ -91,7 +92,6 @@ def compare_sympy_expressions(sympy_expr1, sympy_expr2):
     return equations_are_equal
 
 
-
 # For sequence similarity
 
 def simpy_to_tree(sympy_expr):
@@ -128,3 +128,11 @@ def get_score(str1, str2):
     tree1 = load_expr(str1)
     tree2 = load_expr(str2)
     return simple_distance(tree1, tree2)
+
+def get_numerical_score(str1, str2):
+    tree1 = load_expr(str1)
+    tree2 = load_expr(str2)
+
+    distance = simple_distance(tree1, tree2)
+
+    # score = math.exp(distance/)
