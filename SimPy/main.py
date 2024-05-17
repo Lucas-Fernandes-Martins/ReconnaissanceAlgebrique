@@ -185,7 +185,14 @@ def get_score(str1, str2):
 #     return feedback
 
 
-def detect_terms(answer, expected):
+def detect_terms(answer, expected, verbose=False):
+
+    def is_number(s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
 
     tree1 = load_expr(answer)
     tree2 = load_expr(expected)
@@ -198,21 +205,33 @@ def detect_terms(answer, expected):
     while(len(frontier) > 0):
         current = frontier.pop(0)
 
-        if type(current) is str:
+        if type(current.label) is str and not is_number(current.label):
+            print(current.label)
             n_terms_1 += 1
-        frontier.extend(tree1.children)
-    
+        frontier.extend(current.children)
+
+    print("=================")
+
     frontier = [tree2]
     n_terms_2 = 0
     current = None
+
     while(len(frontier) > 0):
         current = frontier.pop(0)
 
-        if type(current) is str:
+        if type(current.label) is str and not is_number(current.label):
+            print(current.label)
             n_terms_2 += 1
-        frontier.extend(tree1.children)
+        frontier.extend(current.children)
 
+    if verbose:
+        print(f"------Terms expected: {n_terms_1}")
+        print(f"------Terms received: {n_terms_2}")
+
+    return n_terms_1 == n_terms_2
         
+
+
 
 
     
