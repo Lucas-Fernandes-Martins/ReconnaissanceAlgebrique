@@ -246,7 +246,7 @@ class Test(ABC):
     def feedback(expected, answer):
         pass
 
-class SignalError(Test):
+class SignalTest(Test):
 
     def __init__():
         super()
@@ -260,11 +260,11 @@ class SignalError(Test):
         error_sign = self.test(expected, answer)
 
         if error_sign:
-            self.feedback.append("There's a sign error in your answer!")
+            super.feedback.append("There's a sign error in your answer!")
         
-        return "".joins(self.feedback)
+        return "".join(self.feedback)
 
-class NumberTermsError():
+class NumberTermsTest(Test):
 
     def __init__():
         super()
@@ -319,18 +319,58 @@ class NumberTermsError():
         n_terms_error = self.test(expected, answer)
 
         if n_terms_error > 0:
-            self.feedback.append("You forgot terms in your answer!")
+            super.feedback.append("You forgot terms in your answer!")
         elif n_terms_error < 0:
-            self.feedback.append("You added wrong terms in your answer!")
+            super.feedback.append("You added wrong terms in your answer!")
         
-        return "".joins(self.feedback)
-    
+        return "".join(self.feedback)
+
+class NotSimplifiedTest():
+
+    def __init__(self):
+        self.feedback = []
+        pass
+
+    @abstractmethod
+    def test(expected, answer):
+        tree1 = load_expr(expected)
+        tree2 = build_tree(answer)
+
+        #Count nodes expected:
+        counter1 = 0
+        frontier = [tree1]
+        current = None
+        while len(frontier) > 0:
+            current = frontier.pop(0)
+            counter1 += len(current.children)
+            frontier.extend(current.children)
+
+        #Count nodes answer
+        counter2 = 0
+        frontier = [tree2]
+        current = None
+        while len(frontier) > 0:
+            current = frontier.pop(0)
+            counter2 += len(current.children)
+            frontier.extend(current.children)
+        
+        return (counter2 - counter1)/counter1
+
+    @abstractmethod
+    def feedback(self, expected, answer):
+        
+        simplification_factor = self.test(expected, answer)
+
+        if simplification_factor > 0.5:
+            super.feedback.append("You forgot to simplify!")
+
+        return "".join(super.feedback)
 
 
 def give_feedback(answer, expected):
     # Assuming you have a function called load_expr that correctly loads expressions into tree structures
     #If return True then there's an error
-    tests = [SignalError, NumberTermsError]
+    tests = [SignalTest, NumberTermsTest, NotSimplifiedTest]
     
     feedback = []
     for test in tests:
