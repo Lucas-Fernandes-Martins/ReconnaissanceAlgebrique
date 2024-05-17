@@ -185,7 +185,7 @@ def get_score(str1, str2):
 #     return feedback
 
 
-def detect_terms(answer, expected, verbose=False):
+def detect_number_terms_error(answer, expected, verbose=False):
 
     def is_number(s):
         try:
@@ -229,61 +229,113 @@ def detect_terms(answer, expected, verbose=False):
         print(f"------Terms received: {n_terms_2}")
 
     return n_terms_1 == n_terms_2
+
+from abc import ABC, abstractmethod
+
+class Test(ABC):
+
+    def __init__(self):
+        self.feedback = []
+        pass
+
+    @abstractmethod
+    def test():
+        pass
+
+    @abstractmethod
+    def feedback(expected, answer):
+        pass
+
+class SignalError(Test):
+
+    def __init__():
+        super()
+        pass
+
+    def test():
+        raise NotImplementedError('Not implemented!')
+    
+    def feedback(self, expected, answer):
         
+        error_sign = self.test(expected, answer)
 
+        if error_sign:
+            self.feedback.append("There's a sign error in your answer!")
+        
+        return "".joins(self.feedback)
 
+class NumberTermsError():
 
+    def __init__():
+        super()
+        pass
 
+    def test(answer, expected, verbose=False):
+        
+        def is_number(s):
+            try:
+                float(s)
+                return True
+            except ValueError:
+                return False
+
+        tree1 = load_expr(answer)
+        tree2 = load_expr(expected)
+
+        #Traverse first tree
+
+        frontier = [tree1]
+        n_terms_1 = 0
+        current = None
+        while(len(frontier) > 0):
+            current = frontier.pop(0)
+
+            if type(current.label) is str and not is_number(current.label):
+                print(current.label)
+                n_terms_1 += 1
+            frontier.extend(current.children)
+
+        #Traverse second tree
+        frontier = [tree2]
+        n_terms_2 = 0
+        current = None
+
+        while(len(frontier) > 0):
+            current = frontier.pop(0)
+
+            if type(current.label) is str and not is_number(current.label):
+                print(current.label)
+                n_terms_2 += 1
+            frontier.extend(current.children)
+
+        if verbose:
+            print(f"------Terms expected: {n_terms_1}")
+            print(f"------Terms received: {n_terms_2}")
+
+        return n_terms_1 - n_terms_2
+        
+    def feedback(self, expected, answer):
+        
+        n_terms_error = self.test(expected, answer)
+
+        if n_terms_error > 0:
+            self.feedback.append("You forgot terms in your answer!")
+        elif n_terms_error < 0:
+            self.feedback.append("You added wrong terms in your answer!")
+        
+        return "".joins(self.feedback)
     
-    
-
 
 
 def give_feedback(answer, expected):
     # Assuming you have a function called load_expr that correctly loads expressions into tree structures
+    #If return True then there's an error
+    tests = [SignalError, NumberTermsError]
     
-    tree1 = load_expr(answer)
-    tree2 = load_expr(expected)
-    frontier1 = [tree1]
-    frontier2 = [tree2]
     feedback = []
-    n_wrong_terms = 0
-    n_terms_1 = 0
-    n_terms_2 = 0
-    
-    # Breath-first traversal
-    while frontier1 or frontier2:
-        node1 = frontier1.pop(0)
-        node2 = frontier2.pop(0)
+    for test in tests:
+        test_feedback = test.feedback(answer, expected)
+        if test_feedback != "":
+            feedback.append(test_feedback)
 
-        if type(node1.label) is str:
-            print(node1.label)
-            n_terms_1 += 1
-        
-        if type(node2.label) is str:
-            print(node2.label)
-            n_terms_2 += 1
-
-        print("============")
-
-        if node1.label != node2.label:
-            n_wrong_terms += 1
-
-        if node1.label == "Mul":
-            if node1.children[0].label == '-1' and node2.children[0].label != '-1':
-                feedback.append("You got one sign wrong!")
-            elif node1.children[0].label != '-1' and node2.children[0].label == '-1':
-                feedback.append("You got one sign wrong!")
-
-        # Add children to frontiers
-        frontier1.extend(node1.children)
-        frontier2.extend(node2.children)
-
-    if n_terms_1 > n_terms_2:
-        feedback.append("You forgot terms!")
-    elif n_terms_1 < n_terms_2:
-        feedback.append("You have added extra terms!")
-
-    feedback.append(n_wrong_terms)
     return feedback
-        
