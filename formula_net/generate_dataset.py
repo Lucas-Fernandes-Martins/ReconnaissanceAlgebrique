@@ -343,12 +343,12 @@ def generate_expression_pairs(dataset_size):
     three dissimilar expression pairs.
     """
     
-    def dataset_line(expr_l, expr_r, score):
-        return {"expr_l": expr_l, "expr_r": expr_r, "score": score}
+    def dataset_line(expr_true, expr_false, expr_anchor):
+        return {"expr_true": expr_true, "expr_false": expr_false, "expr_anchor": expr_anchor}
     
     pairs = []
     for _ in range(dataset_size):
-        expression_depth = random.choice(list(range(2,6)))
+        expression_depth = random.choice([random.choice(list(range(2,4))),random.choice(list(range(2,5))), random.choice(list(range(2,6)))])
         base_expression = generate_expression(expression_depth)
         # print("================================================================================", "depth = ", expression_depth, "=======")
         # print(node_to_dict(base_expression))
@@ -359,23 +359,17 @@ def generate_expression_pairs(dataset_size):
             
         expanded = expand_expression(base_expression)
         # Serialize and add to pairs
-        pairs.append(dataset_line(node_to_dict(base_expression), node_to_dict(simplified), 0))# Equivalent
-        
-        pairs.append(dataset_line(node_to_dict(base_expression), node_to_dict(expanded), 0))# Equivalent
-
-        pairs.append(dataset_line(node_to_dict(simplified), node_to_dict(expanded), 0))# Equivalent
-
-        pairs.append((node_to_dict(base_expression), node_to_dict(base_expression), 0))  # Equivalent
-        
         # Apply non-equivalent transformations
         for _ in range(NUM_INEQUIVALENT_TRANSFORMATIONS):
             t1 = random.choice(inequivalent_transformations)
             t2 = random.choice(inequivalent_transformations)
             transformed_expression = t2(t1(base_expression))
-            pairs.append(dataset_line(node_to_dict(base_expression), node_to_dict(transformed_expression), 1))  # Non-equivalent
+            pairs.append(dataset_line(node_to_dict(simplified), node_to_dict(transformed_expression), node_to_dict(base_expression)))  # Non-equivalent
+            pairs.append(dataset_line(node_to_dict(expanded), node_to_dict(transformed_expression), node_to_dict(base_expression)))  # Non-equivalent
             
         # Clear cut
-        pairs.append(dataset_line(node_to_dict(base_expression), node_to_dict(generate_expression(expression_depth)), 1) ) # Non-equivalent
+        pairs.append(dataset_line(node_to_dict(base_expression), node_to_dict(generate_expression(expression_depth)), node_to_dict(simplified)) ) # Non-equivalent
+        pairs.append(dataset_line(node_to_dict(simplified), node_to_dict(generate_expression(expression_depth)), node_to_dict(expanded)) ) # Non-equivalent
 
     return pairs
 
@@ -384,7 +378,7 @@ def generate_partial_dataset(size):
     """Wrapper function to generate a portion of the dataset."""
     return generate_expression_pairs(size)
 
-def parallel_dataset_generation(total_size, chunk_size=10, timeout=8, max_retries_per_chunk=3):
+def parallel_dataset_generation(total_size, chunk_size=10, timeout=10, max_retries_per_chunk=2):
     """Generates the dataset in parallel, handling timeouts and errors."""
     dataset = []
     futures = []
@@ -414,7 +408,83 @@ def parallel_dataset_generation(total_size, chunk_size=10, timeout=8, max_retrie
     return dataset
 
 if __name__ == "__main__":
-    desired_dataset_size = 150000
-    generated_dataset = parallel_dataset_generation(desired_dataset_size,  chunk_size=200)
-    with open("math_datagen.json", "w") as f:
+    desired_dataset_size = 8000
+    generated_dataset = parallel_dataset_generation(desired_dataset_size,  chunk_size=50)
+    with open("math_datagen_triplet.json", "w") as f:
         json.dump(generated_dataset, f, indent=4)
+# import queue
+# import time
+# import signal
+# from concurrent.futures import ThreadPoolExecutor
+
+# def generate_partial_dataset(size):
+#     """Wrapper function to generate a portion of the dataset."""
+#     return generate_expression_pairs(size)
+
+# def parallel_dataset_generation(total_size, chunk_size=10, timeout=30, max_workers=4, max_retries=3):
+#     """Generates the dataset in parallel, handling timeouts and errors."""
+#     dataset = []
+#     retry_queue = queue.Queue()
+#     completed_tasks = 0
+#     pending_tasks = 0
+#     retries = {}
+#     should_terminate = False
+
+#     pbar = tqdm(total=total_size, desc="Generating dataset", unit="items")
+
+#     def signal_handler(sig, frame):
+#         nonlocal should_terminate
+#         should_terminate = True
+#         print("Received interrupt signal. Terminating workers...")
+
+#     signal.signal(signal.SIGINT, signal_handler)
+
+#     with ThreadPoolExecutor(max_workers=max_workers) as executor:
+#         # Submit initial tasks
+#         for _ in range(0, total_size, chunk_size):
+#             future = executor.submit(generate_partial_dataset, chunk_size)
+#             pending_tasks += 1
+#             retries[future] = 0
+
+#         while completed_tasks < total_size and not should_terminate:
+#             try:
+#                 future = retry_queue.get(timeout=timeout)
+#             except queue.Empty:
+#                 # No completed tasks, check for timeouts
+#                 for future, retries_count in retries.items():
+#                     if future.done():
+#                         completed_tasks += chunk_size
+#                         pbar.update(chunk_size)
+#                         try:
+#                             result = future.result()
+#                             dataset.extend(result)
+#                         except Exception as e:
+#                             logging.error(f"Task failed with exception: {e}")
+#                     elif retries_count < max_retries:
+#                         # Task timed out, retry
+#                         new_future = executor.submit(generate_partial_dataset, chunk_size)
+#                         pending_tasks += 1
+#                         retries[new_future] = retries_count + 1
+#                         del retries[future]
+#             else:
+#                 # Task completed
+#                 pending_tasks -= 1
+#                 try:
+#                     result = future.result()
+#                     dataset.extend(result)
+#                     completed_tasks += chunk_size
+#                     pbar.update(chunk_size)
+#                 except Exception as e:
+#                     logging.error(f"Task failed with exception: {e}")
+#                 del retries[future]
+
+#     pbar.close()
+#     if should_terminate:
+#         print("Dataset generation terminated.")
+#     return dataset
+
+# if __name__ == "__main__":
+#     desired_dataset_size = 10000
+#     generated_dataset = parallel_dataset_generation(desired_dataset_size, chunk_size=200)
+#     with open("math_datagen_triplet.json", "w") as f:
+#         json.dump(generated_dataset, f, indent=4)
