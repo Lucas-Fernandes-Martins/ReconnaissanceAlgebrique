@@ -248,12 +248,12 @@ class Test(ABC):
 
 class SignalTest(Test):
 
-    def __init__():
+    def __init__(self):
         super()
         pass
 
-    def test():
-        raise NotImplementedError('Not implemented!')
+    def test(self, expected, answer):
+        return False
     
     def feedback(self, expected, answer):
         
@@ -262,11 +262,11 @@ class SignalTest(Test):
         if error_sign:
             super.feedback.append("There's a sign error in your answer!")
         
-        return "".join(self.feedback)
+        return "".join(super.feedback)
 
 class NumberTermsTest(Test):
 
-    def __init__():
+    def __init__(self):
         super()
         pass
 
@@ -323,9 +323,9 @@ class NumberTermsTest(Test):
         elif n_terms_error < 0:
             super.feedback.append("You added wrong terms in your answer!")
         
-        return "".join(self.feedback)
+        return "".join(super.feedback)
 
-class NotSimplifiedTest():
+class NotSimplifiedTest(Test):
 
     def __init__(self):
         self.feedback = []
@@ -374,7 +374,7 @@ def give_feedback(answer, expected):
     
     feedback = []
     for test in tests:
-        test_feedback = test.feedback(answer, expected)
+        test_feedback = test().feedback(answer, expected)
         if test_feedback != "":
             feedback.append(test_feedback)
 
