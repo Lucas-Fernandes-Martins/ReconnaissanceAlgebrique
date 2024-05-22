@@ -230,147 +230,153 @@ def detect_number_terms_error(answer, expected, verbose=False):
 
     return n_terms_1 == n_terms_2
 
-from abc import ABC, abstractmethod
-
-class Test(ABC):
-
-    def __init__(self):
-        self.feedback_list = []
-        pass
-
-    @abstractmethod
-    def test():
-        pass
-
-    @abstractmethod
-    def feedback(expected, answer):
-        pass
-
-class SignalTest(Test):
-
-    def __init__(self):
-        super().__init__()
-
-    def test(self, expected, answer):
+def signal_test(answer, expected):
+    def has_sign_error(ans, exp):
+        # Placeholder logic for sign error checking
         return False
+
+    if has_sign_error(answer, expected):
+        return "There's a sign error in your answer!"
+    return ""
+
+def number_terms_test(answer, expected):
+    def is_number(s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+
+    def count_terms(tree):
+        frontier = [tree]
+        n_terms = 0
+        while frontier:
+            current = frontier.pop(0)
+            if isinstance(current.label, str) and not is_number(current.label):
+                n_terms += 1
+            frontier.extend(current.children)
+        return n_terms
+
+    tree1 = load_expr(expected)
+    tree2 = load_expr(answer)
+
+    n_terms_1 = count_terms(tree1)
+    n_terms_2 = count_terms(tree2)
+
+    if n_terms_1 > n_terms_2:
+        return "You forgot terms in your answer!"
+    elif n_terms_1 < n_terms_2:
+        return "You added wrong terms in your answer!"
+    return ""
+
+def not_simplified_test(answer, expected):
+    tree1 = load_expr(expected)
+    tree2 = load_expr(answer)
+
+    def count_nodes(tree):
+        counter = 0
+        frontier = [tree]
+        while frontier:
+            current = frontier.pop(0)
+            counter += len(current.children)
+            frontier.extend(current.children)
+        return counter
+
+    counter1 = count_nodes(tree1)
+    counter2 = count_nodes(tree2)
+
+    if (counter2 - counter1) / counter1 > 0.5:
+        return "You forgot to simplify!"
+    return ""
+
+# Example usage (make sure load_expr and build_tree are defined):
+# answer = ...
+# expected = ...
+# feedback = give_feedback(answer, expected)
+# print(feedback)import sympy as sp
+
+import sympy as sp
+
+def identify_sign_error(expr1, expr2):
+    # Convert both expressions to expanded form
+    expanded1 = sp.expand(expr1)
+    expanded2 = sp.expand(expr2)
     
-    def feedback(self, expected, answer):
-        
-        error_sign = self.test(expected, answer)
+    # Break down both expressions into their respective terms
+    terms1 = expanded1.as_ordered_terms()
+    terms2 = expanded2.as_ordered_terms()
 
-        if error_sign:
-            self.feedback_list.append("There's a sign error in your answer!")
-        
-        return "".join(self.feedback_list)
+    # Create a dictionary of terms to their coefficients for each expression
+    terms_dict1 = {term.as_coeff_Mul()[1]: term.as_coeff_Mul()[0] for term in terms1}
+    terms_dict2 = {term.as_coeff_Mul()[1]: term.as_coeff_Mul()[0] for term in terms2}
 
-class NumberTermsTest(Test):
+    # Check for sign errors by comparing coefficients of the same terms
+    for term in terms_dict1:
+        if term in terms_dict2 and terms_dict1[term] + terms_dict2[term] == 0:
+            # If terms are present in both expressions and their coefficients sum to zero
+            return True
 
-    def __init__(self):
-        super().__init__()
-
-    def test(answer, expected, verbose=False):
-        
-        def is_number(s):
-            try:
-                float(s)
-                return True
-            except ValueError:
-                return False
-
-        tree1 = load_expr(answer)
-        tree2 = load_expr(expected)
-
-        #Traverse first tree
-
-        frontier = [tree1]
-        n_terms_1 = 0
-        current = None
-        while(len(frontier) > 0):
-            current = frontier.pop(0)
-
-            if type(current.label) is str and not is_number(current.label):
-                print(current.label)
-                n_terms_1 += 1
-            frontier.extend(current.children)
-
-        #Traverse second tree
-        frontier = [tree2]
-        n_terms_2 = 0
-        current = None
-
-        while(len(frontier) > 0):
-            current = frontier.pop(0)
-
-            if type(current.label) is str and not is_number(current.label):
-                print(current.label)
-                n_terms_2 += 1
-            frontier.extend(current.children)
-
-        if verbose:
-            print(f"------Terms expected: {n_terms_1}")
-            print(f"------Terms received: {n_terms_2}")
-
-        return n_terms_1 - n_terms_2
-        
-    def feedback(self, expected, answer):
-        
-        n_terms_error = self.test(expected, answer)
-
-        if n_terms_error > 0:
-            self.feedback_list.append("You forgot terms in your answer!")
-        elif n_terms_error < 0:
-            self.feedback_list.append("You added wrong terms in your answer!")
-        
-        return "".join(self.feedback_list)
-
-class NotSimplifiedTest(Test):
-
-    def __init__(self):
-        super().__init__()
-
-    def test(expected, answer):
-        tree1 = load_expr(expected)
-        tree2 = build_tree(answer)
-
-        #Count nodes expected:
-        counter1 = 0
-        frontier = [tree1]
-        current = None
-        while len(frontier) > 0:
-            current = frontier.pop(0)
-            counter1 += len(current.children)
-            frontier.extend(current.children)
-
-        #Count nodes answer
-        counter2 = 0
-        frontier = [tree2]
-        current = None
-        while len(frontier) > 0:
-            current = frontier.pop(0)
-            counter2 += len(current.children)
-            frontier.extend(current.children)
-        
-        return (counter2 - counter1)/counter1
-
-    def feedback(self, expected, answer):
-        
-        simplification_factor = self.test(expected, answer)
-
-        if simplification_factor > 0.5:
-            self.feedback_list.append("You forgot to simplify!")
-
-        return "".join(self.feedback_list)
-
+    return False
 
 def give_feedback(answer, expected):
-    # Assuming you have a function called load_expr that correctly loads expressions into tree structures
-    #If return True then there's an error
-    tests = [SignalTest(), NumberTermsTest(), NotSimplifiedTest()]
-    
     feedback_list = []
-    for test in tests:
-        test_feedback = test.feedback(answer, expected)
-        if test_feedback != "":
-            feedback_list.append(test_feedback)
+
+    # Parse the input strings as SymPy expressions
+    expr1 = sp.sympify(answer)
+    expr2 = sp.sympify(expected)
+
+    # Check for sign errors
+    if identify_sign_error(expr1, expr2):
+        feedback_list.append("There's a sign error in your answer!")
 
     return feedback_list
+
+def extract_symbols(tree):
+    symbols = set()
+    frontier = [tree]
+    while frontier:
+        current = frontier.pop(0)
+        if current is None:
+            continue
+        # Check if the current node's label is a symbol (not an operator or number)
+        if isinstance(current.label, str) and not current.label.isnumeric():
+            symbols.add(current.label)
+        # Add the children of the current node to the frontier
+        frontier.extend(current.children)
+    return symbols
+
+def give_feedback_symbol_analysis(answer, expected):
+    feedback_list = []
+
+    tree1 = load_expr(answer)
+    tree2 = load_expr(expected)
+
+    # Extract symbols from answer and expected expressions
+    symbols_answer = set(extract_symbols(tree1))
+    symbols_expected = set(extract_symbols(tree2))
+
+    # Check if symbols in answer match symbols in expected
+    if symbols_answer != symbols_expected:
+        missing_symbols = symbols_expected - symbols_answer
+        extra_symbols = symbols_answer - symbols_expected
+        feedback = "Wrong symbols in your answer!"
+        if missing_symbols:
+            feedback += f" Missing symbols: {missing_symbols}"
+        if extra_symbols:
+            feedback += f" Extra symbols: {extra_symbols}"
+        feedback_list.append(feedback)
+
+    return feedback_list
+
+
+if __name__ == '__main__':
+    # Example use cases
+    print(give_feedback('x+y+z', 'x+y-z'))
+    print(give_feedback('x+y', 'x-z'))
+
+    print(give_feedback('x+y+z', 'x+y+z'))
+    print(give_feedback('x+y', 'x-y'))
+
+
+    print("======================")
+    print(give_feedback_symbol_analysis('x+y+z', 'x+y'))
