@@ -1,4 +1,3 @@
-from urllib.request import Request
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from engine import get_score, compare_latex_expressions_with_differences, simplify_latex_expression
@@ -22,7 +21,6 @@ def process_strings(string1: str, string2: str):
 def parse_input(input_string):
     return input_string.replace("backl", "\\")
  
-
 # Define a route to handle GET requests with two string arguments
 @app.get('/api/get_score/')
 def get_data(string1: str, string2: str):
@@ -34,7 +32,6 @@ def get_data(string1: str, string2: str):
     response = {'result': [string1, string2, data]}
     # Return JSON response
     return response
-
 
 @app.post("/get_score")
 async def receive_data(data: dict):
@@ -61,4 +58,3 @@ async def get_differences(data: dict):
         'simplified_expr2': simplified_expr2,
     }
     return response
-

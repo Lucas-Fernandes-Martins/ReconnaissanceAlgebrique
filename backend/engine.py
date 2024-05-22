@@ -102,7 +102,7 @@ def compare_latex_expressions(latex_expr1, latex_expr2):
 def compare_sympy_expressions(sympy_expr1, sympy_expr2):
 
     # Simplify expressions
-    expr1, expr2 = simplify_sympy_expression(sympy_expr1), simplify_sympy_expression(sympy_expr2)
+    expr1, expr2 = simplify_sympy_expression(simplify(sympy_expr1)), simplify_sympy_expression(simplify(sympy_expr2))
     # Check if the expressions are equal
     equations_are_equal = Eq(expr1, expr2) == True
 
@@ -111,7 +111,7 @@ def compare_sympy_expressions(sympy_expr1, sympy_expr2):
 
 # For sequence similarity
 
-def simpy_to_tree(sympy_expr):
+def sympy_to_tree(sympy_expr):
     return srepr(simplify_sympy_expression(sympy_expr))
 
 def latex_to_tree(latex_expr):
@@ -144,12 +144,12 @@ def load_expr(expr):
 def get_score(str1, str2):
     tree1 = load_expr(str1)
     tree2 = load_expr(str2)
-    return simple_distance(tree1, tree2)
+    return simple_distance(tree1.to_zss_node(), tree2.to_zss_node())
 
 def get_numerical_score(str1, str2):
     tree1 = load_expr(str1)
     tree2 = load_expr(str2)
 
-    distance = simple_distance(tree1, tree2)
+    distance = simple_distance(tree1.to_zss_node(), tree2.to_zss_node())
 
     # score = math.exp(distance/)

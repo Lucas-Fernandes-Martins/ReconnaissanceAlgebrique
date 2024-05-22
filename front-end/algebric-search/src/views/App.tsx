@@ -5,26 +5,27 @@ import 'katex/dist/katex.min.css';
 import { BlockMath } from 'react-katex';
 
 function App() {
-  const [firstEquation, setFirstEquation] = useState("");
-  const [secondEquation, setSecondEquation] = useState("");
-  const [result, setResult] = useState("");
-  const [simplifiedExpr1, setSimplifiedExpr1] = useState("");
-  const [simplifiedExpr2, setSimplifiedExpr2] = useState("");
-  const [highlightedExpr1, setHighlightedExpr1] = useState("");
-  const [highlightedExpr2, setHighlightedExpr2] = useState("");
+  const [firstEquation, setFirstEquation] = useState<string>("");
+  const [secondEquation, setSecondEquation] = useState<string>("");
+  const [simplifiedExpr1, setSimplifiedExpr1] = useState<string>("");
+  const [simplifiedExpr2, setSimplifiedExpr2] = useState<string>("");
+  const [highlightedExpr1, setHighlightedExpr1] = useState<string>("");
+  const [highlightedExpr2, setHighlightedExpr2] = useState<string>("");
 
-  const data = {'first_equation': firstEquation, 'second_equation': secondEquation};
+  const data = { 'first_equation': firstEquation, 'second_equation': secondEquation };
 
-  const highlightDifferences = (expr1, expr2, differences) => {
+  const highlightDifferences = (expr1: string, expr2: string, differences: any[]) => {
     let highlightedExpr1 = expr1;
     let highlightedExpr2 = expr2;
 
     differences.forEach(([pos1, pos2, label1, label2]) => {
       if (pos1 !== null) {
-        highlightedExpr1 = highlightedExpr1.replace(label1, `<span class="highlight">${label1}</span>`);
+        const regex = new RegExp(`\\b${label1}\\b`, 'g');
+        highlightedExpr1 = highlightedExpr1.replace(regex, `\\textcolor{red}{${label1}}`);
       }
       if (pos2 !== null) {
-        highlightedExpr2 = highlightedExpr2.replace(label2, `<span class="highlight">${label2}</span>`);
+        const regex = new RegExp(`\\b${label2}\\b`, 'g');
+        highlightedExpr2 = highlightedExpr2.replace(regex, `\\textcolor{red}{${label2}}`);
       }
     });
 
@@ -58,7 +59,7 @@ function App() {
     }
   };
 
-  const SubmitFunction = (event: { preventDefault: () => void; }) => {
+  const SubmitFunction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     checkSimilarity();
   };
@@ -74,10 +75,6 @@ function App() {
             <button type="submit" className="submit-button">Similarity</button>
           </form>
 
-          <div className="result">
-            <p>{result}</p>
-          </div>
-          
           <div className="expressions">
             <h3>Original Expressions</h3>
             <BlockMath>{firstEquation}</BlockMath>
@@ -90,8 +87,8 @@ function App() {
 
           <div className="highlighted-expressions">
             <h3>Highlighted Differences</h3>
-            <div dangerouslySetInnerHTML={{ __html: highlightedExpr1 }}></div>
-            <div dangerouslySetInnerHTML={{ __html: highlightedExpr2 }}></div>
+            <BlockMath math={highlightedExpr1} />
+            <BlockMath math={highlightedExpr2} />
           </div>
         </div>
       </div>
