@@ -359,11 +359,15 @@ def give_feedback_symbol_analysis(answer, expected):
     if symbols_answer != symbols_expected:
         missing_symbols = symbols_expected - symbols_answer
         extra_symbols = symbols_answer - symbols_expected
-        feedback = "Wrong symbols in your answer!"
+        if '-1' in missing_symbols:
+            missing_symbols.remove('-1')
+        if '-1' in extra_symbols:
+            extra_symbols.remove('-1')
+        feedback = ""
         if missing_symbols:
-            feedback += f" Missing symbols: {missing_symbols}"
+            feedback += f"Wrong symbols in your answer! Missing symbols: {missing_symbols}"
         if extra_symbols:
-            feedback += f" Extra symbols: {extra_symbols}"
+            feedback += f"Wrong symbols in your answer! Extra symbols: {extra_symbols}"
         feedback_list.append(feedback)
 
     return feedback_list
