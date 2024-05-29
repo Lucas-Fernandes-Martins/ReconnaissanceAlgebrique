@@ -1,0 +1,502 @@
+[
+    {
+        "expr_l": "exp(sin(sin(p)))",
+        "expr_r": "delta + exp(sin(sin(p)))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(exp(l)*cos(k))",
+        "expr_r": "sin(exp(l)*cos(k))",
+        "score": 0
+    },
+    {
+        "expr_l": "k*s*(v + y) + sin(w) + cos(g)",
+        "expr_r": "delta + k*s*(v + y) + sin(w) + cos(g)",
+        "score": 1
+    },
+    {
+        "expr_l": "a*c**p*e + sin(f**l)",
+        "expr_r": "a*c**p*e + sin(f**l)",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(exp(q) + cos(n))",
+        "expr_r": "delta + sin(exp(q) + cos(n))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(sin(k + p))",
+        "expr_r": "sin(sin(k + p))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(e*k*p*z)",
+        "expr_r": "delta + sin(e*k*p*z)",
+        "score": 1
+    },
+    {
+        "expr_l": "(x**u)**exp(w)*exp(m*n)",
+        "expr_r": "delta + (x**u)**exp(w)*exp(m*n)",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(sin(cos(v)))",
+        "expr_r": "exp(sin(cos(v)))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(exp(e)**sin(i))",
+        "expr_r": "exp(exp(e)**sin(i))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(sin(y))*cos(sin(s))",
+        "expr_r": "delta + exp(sin(y))*cos(sin(s))",
+        "score": 1
+    },
+    {
+        "expr_l": "((c*y)**sin(g))**sin(cos(x))",
+        "expr_r": "((c*y)**sin(g))**sin(cos(x))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(t**c)*sin(sin(h))",
+        "expr_r": "sin(t**c)*sin(sin(h))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(exp(a)**sin(u))",
+        "expr_r": "sin(exp(a)**sin(u))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(exp(c**a))",
+        "expr_r": "cos(exp(c**a))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin((i + o)**(s + y))",
+        "expr_r": "sin((i + o)**(s + y))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin((a*r)**sin(q))",
+        "expr_r": "sin((a*r)**sin(q))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(a*b + u**n)",
+        "expr_r": "delta + cos(a*b + u**n)",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(x)*sin(l*y)*cos(e)",
+        "expr_r": "sin(x)*sin(l*y)*cos(e)",
+        "score": 0
+    },
+    {
+        "expr_l": "(sin(k)*sin(r))**cos(w*z)",
+        "expr_r": "delta + (sin(k)*sin(r))**cos(w*z)",
+        "score": 1
+    },
+    {
+        "expr_l": "exp((n + u)**(j*q))",
+        "expr_r": "delta + exp((n + u)**(j*q))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(a*k)**((i**k)**(a**w))",
+        "expr_r": "exp(a*k)**((i**k)**(a**w))",
+        "score": 0
+    },
+    {
+        "expr_l": "(cos(x)**(c + o))**(exp(y)**sin(e))",
+        "expr_r": "delta + (cos(x)**(c + o))**(exp(y)**sin(e))",
+        "score": 1
+    },
+    {
+        "expr_l": "cos((f + g)**sin(u))",
+        "expr_r": "delta + cos((f + g)**sin(u))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(p*x*exp(s))",
+        "expr_r": "exp(p*x*exp(s))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(e + y)**cos(cos(s))",
+        "expr_r": "delta + sin(e + y)**cos(cos(s))",
+        "score": 1
+    },
+    {
+        "expr_l": "u*y*sin(h) + sin(r)**exp(p)",
+        "expr_r": "u*y*sin(h) + sin(r)**exp(p)",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(a*h*(b + o))",
+        "expr_r": "delta + cos(a*h*(b + o))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(e**r + cos(n))",
+        "expr_r": "delta + exp(e**r + cos(n))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(exp(i))**sin(exp(w))",
+        "expr_r": "exp(exp(i))**sin(exp(w))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(sin(o + r))",
+        "expr_r": "cos(sin(o + r))",
+        "score": 0
+    },
+    {
+        "expr_l": "(c**u + q*w)**exp(y**r)",
+        "expr_r": "(c**u + q*w)**exp(y**r)",
+        "score": 0
+    },
+    {
+        "expr_l": "((c + s)*exp(w))**cos(sin(x))",
+        "expr_r": "((c + s)*exp(w))**cos(sin(x))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(cos(cos(m)))",
+        "expr_r": "delta + exp(cos(cos(m)))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(cos(sin(i)))",
+        "expr_r": "delta + sin(cos(sin(i)))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(cos(exp(k)))",
+        "expr_r": "delta + sin(cos(exp(k)))",
+        "score": 1
+    },
+    {
+        "expr_l": "o**w + u**s + exp(u) + sin(b)",
+        "expr_r": "delta + o**w + u**s + exp(u) + sin(b)",
+        "score": 1
+    },
+    {
+        "expr_l": "((b*i)**sin(e))**cos(sin(q))",
+        "expr_r": "((b*i)**sin(e))**cos(sin(q))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(d)*exp(m) + cos(m**r)",
+        "expr_r": "delta + exp(d)*exp(m) + cos(m**r)",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(exp(a))*cos(cos(x))",
+        "expr_r": "delta + sin(exp(a))*cos(cos(x))",
+        "score": 1
+    },
+    {
+        "expr_l": "(f**r)**(p**z) + (l**i)**sin(i)",
+        "expr_r": "(f**r)**(p**z) + (l**i)**sin(i)",
+        "score": 0
+    },
+    {
+        "expr_l": "q**n*(p + z) + sin(sin(a))",
+        "expr_r": "q**n*(p + z) + sin(sin(a))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(exp(l*t))",
+        "expr_r": "delta + exp(exp(l*t))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(d*i*sin(n))",
+        "expr_r": "sin(d*i*sin(n))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(h*r)**(o**w + sin(x))",
+        "expr_r": "sin(h*r)**(o**w + sin(x))",
+        "score": 0
+    },
+    {
+        "expr_l": "b + t + (x + y)**(f*s) + exp(k)",
+        "expr_r": "b + t + (x + y)**(f*s) + exp(k)",
+        "score": 0
+    },
+    {
+        "expr_l": "i*m + v**u + exp(q**g)",
+        "expr_r": "delta + i*m + v**u + exp(q**g)",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(exp(b + z))",
+        "expr_r": "sin(exp(b + z))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(exp(e**l))",
+        "expr_r": "exp(exp(e**l))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(exp(b*d))",
+        "expr_r": "sin(exp(b*d))",
+        "score": 0
+    },
+    {
+        "expr_l": "(a*g + k*x)**(e*z*cos(x))",
+        "expr_r": "delta + (a*g + k*x)**(e*z*cos(x))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(exp(k*w))",
+        "expr_r": "delta + sin(exp(k*w))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(sin(b + j))",
+        "expr_r": "delta + exp(sin(b + j))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(exp(b + t))",
+        "expr_r": "delta + exp(exp(b + t))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(p + y) + cos(b + x)",
+        "expr_r": "delta + sin(p + y) + cos(b + x)",
+        "score": 1
+    },
+    {
+        "expr_l": "(n**a + sin(c))**((w + z)**(j**q))",
+        "expr_r": "(n**a + sin(c))**((w + z)**(j**q))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(sin(v + w))",
+        "expr_r": "cos(sin(v + w))",
+        "score": 0
+    },
+    {
+        "expr_l": "((e + s)**sin(a))**(exp(j)*cos(l))",
+        "expr_r": "delta + ((e + s)**sin(a))**(exp(j)*cos(l))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(m + r)*cos(cos(o))",
+        "expr_r": "exp(m + r)*cos(cos(o))",
+        "score": 0
+    },
+    {
+        "expr_l": "(f*y)**sin(z) + sin(i + m)",
+        "expr_r": "(f*y)**sin(z) + sin(i + m)",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(exp(e*x))",
+        "expr_r": "delta + sin(exp(e*x))",
+        "score": 1
+    },
+    {
+        "expr_l": "((e*q)**(n + z))**((v*y)**sin(t))",
+        "expr_r": "((e*q)**(n + z))**((v*y)**sin(t))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(sin(exp(r)))",
+        "expr_r": "exp(sin(exp(r)))",
+        "score": 0
+    },
+    {
+        "expr_l": "(f*v + sin(j))*cos(q)**cos(n)",
+        "expr_r": "delta + (f*v + sin(j))*cos(q)**cos(n)",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(exp(2*y))",
+        "expr_r": "exp(exp(2*y))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(sin(cos(z)))",
+        "expr_r": "exp(sin(cos(z)))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(n*v) + cos(cos(t))",
+        "expr_r": "delta + cos(n*v) + cos(cos(t))",
+        "score": 1
+    },
+    {
+        "expr_l": "(n + x)**exp(z)*exp(cos(g))",
+        "expr_r": "delta + (n + x)**exp(z)*exp(cos(g))",
+        "score": 1
+    },
+    {
+        "expr_l": "((u + z)**(g + t))**(sin(i) + sin(o))",
+        "expr_r": "((u + z)**(g + t))**(sin(i) + sin(o))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(exp(p**h))",
+        "expr_r": "sin(exp(p**h))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(sin(sin(g)))",
+        "expr_r": "delta + exp(sin(sin(g)))",
+        "score": 1
+    },
+    {
+        "expr_l": "cos(sin(j**y))",
+        "expr_r": "cos(sin(j**y))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(exp(c*t))",
+        "expr_r": "delta + cos(exp(c*t))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin((m**c)**exp(p))",
+        "expr_r": "delta + sin((m**c)**exp(p))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(2*x*(k + v))",
+        "expr_r": "delta + exp(2*x*(k + v))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(sin(l)*cos(x))",
+        "expr_r": "exp(sin(l)*cos(x))",
+        "score": 0
+    },
+    {
+        "expr_l": "(cos(b)*cos(h))**sin(exp(b))",
+        "expr_r": "(cos(b)*cos(h))**sin(exp(b))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(cos(g*q))",
+        "expr_r": "sin(cos(g*q))",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(a + e*n + y)",
+        "expr_r": "exp(a + e*n + y)",
+        "score": 0
+    },
+    {
+        "expr_l": "exp(sin(i))*cos(sin(m))",
+        "expr_r": "exp(sin(i))*cos(sin(m))",
+        "score": 0
+    },
+    {
+        "expr_l": "(sin(r)*sin(s))**(exp(k)**exp(b))",
+        "expr_r": "delta + (sin(r)*sin(s))**(exp(k)**exp(b))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(sin(b)) + cos(exp(h))",
+        "expr_r": "delta + sin(sin(b)) + cos(exp(h))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(exp(g) + cos(u))",
+        "expr_r": "exp(exp(g) + cos(u))",
+        "score": 0
+    },
+    {
+        "expr_l": "h*w*exp(y)*exp(cos(w))",
+        "expr_r": "delta + h*w*exp(y)*exp(cos(w))",
+        "score": 1
+    },
+    {
+        "expr_l": "cos((q + s)*sin(k))",
+        "expr_r": "delta + cos((q + s)*sin(k))",
+        "score": 1
+    },
+    {
+        "expr_l": "(a + i + p + q)**(d*z*sin(h))",
+        "expr_r": "delta + (a + i + p + q)**(d*z*sin(h))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin((c*y)**(s + v))",
+        "expr_r": "delta + sin((c*y)**(s + v))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(w)*sin(a)*sin(z)*cos(x)",
+        "expr_r": "exp(w)*sin(a)*sin(z)*cos(x)",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(m*y + sin(r))",
+        "expr_r": "sin(m*y + sin(r))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(r*x + exp(y))",
+        "expr_r": "cos(r*x + exp(y))",
+        "score": 0
+    },
+    {
+        "expr_l": "sin(sin(n))**((j**p)**cos(i))",
+        "expr_r": "delta + sin(sin(n))**((j**p)**cos(i))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(cos(exp(h)))",
+        "expr_r": "delta + exp(cos(exp(h)))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp((r**m)**exp(c))",
+        "expr_r": "delta + exp((r**m)**exp(c))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(sin(l)*sin(n))",
+        "expr_r": "sin(sin(l)*sin(n))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(exp(i**t))",
+        "expr_r": "delta + cos(exp(i**t))",
+        "score": 1
+    },
+    {
+        "expr_l": "sin(exp(sin(a)))",
+        "expr_r": "sin(exp(sin(a)))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(sin(a)**(m + q))",
+        "expr_r": "delta + cos(sin(a)**(m + q))",
+        "score": 1
+    },
+    {
+        "expr_l": "exp(sin(d)**(h*v))",
+        "expr_r": "exp(sin(d)**(h*v))",
+        "score": 0
+    },
+    {
+        "expr_l": "cos(exp(o))**cos(h + i)",
+        "expr_r": "delta + cos(exp(o))**cos(h + i)",
+        "score": 1
+    },
+    {
+        "expr_l": "cos((b + u)*cos(j))",
+        "expr_r": "delta + cos((b + u)*cos(j))",
+        "score": 1
+    }
+]
