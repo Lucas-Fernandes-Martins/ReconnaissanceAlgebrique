@@ -1,0 +1,44 @@
+/* App.css */
+.App {
+  background-image: url('../assets/hero-bg.svg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  /* Ensure the container takes up the full height of the viewport */
+  display: flex;
+  justify-content: center;
+  /* Center the content horizontally */
+  align-items: center;
+  /* Center the content vertically */
+}
+
+.form {
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white background */
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  /* Center the form elements horizontally */
+}
+
+.input-field {
+  margin: 10px;
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
