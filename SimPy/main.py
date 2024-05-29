@@ -318,6 +318,53 @@ def identify_sign_error(expr1, expr2):
 
     return False
 
+
+# Function to traverse the tree and collect unary operations
+def collect_unary_ops(tree):
+    unary_ops = []
+
+    def traverse(node):
+        if len(node.children) == 1:
+            unary_ops.append((node.label, node.children[0]))
+        for child in node.children:
+            traverse(child)
+
+    traverse(tree)
+    return unary_ops
+
+# Function to identify unary operation errors
+def identify_unary_operation_error(expr1, expr2):
+    # Convert both expressions to their tree structure
+    tree1 = load_expr(expr1)
+    tree2 = load_expr(expr2)
+
+    # Collect unary operations from both expressions
+    unary_ops1 = collect_unary_ops(tree1)
+    unary_ops2 = collect_unary_ops(tree2)
+
+    # Find differences in unary operations
+    errors = []
+    for op1, arg1 in unary_ops1:
+        match_found = False
+        for op2, arg2 in unary_ops2:
+            if op1 == op2:
+                #errors.append((op1, op2))
+                match_found = True
+                break
+        if not match_found:
+            errors.append((op1, None))
+    
+    for op2, arg2 in unary_ops2:
+        match_found = False
+        for op1, arg1 in unary_ops1:
+            if op1 == op2:
+                match_found = True
+                break
+        if not match_found:
+            errors.append((None, op2))
+
+    return errors
+
 def give_feedback(answer, expected):
     feedback_list = []
 
@@ -368,6 +415,25 @@ def give_feedback_symbol_analysis(answer, expected):
 
     return feedback_list
 
+def give_feedback_unary_op(answer, expected):
+    feedback_list = []
+
+    # Check for unary operation errors
+    errors = identify_unary_operation_error(answer, expected)
+    if errors:
+        feedback_list.append("There are unary operation errors in your answer:")
+        for err in errors:
+            if err[0] and err[1]:
+                feedback_list.append(f"  - Expected {err[1]} but found {err[0]} ")
+            elif err[0]:
+                feedback_list.append(f"  - Unexpected {err[0]}")
+            elif err[1]:
+                feedback_list.append(f"  - Missing expected {err[1]}")
+    else:
+        feedback_list.append("No unary operation errors found.")
+
+    return feedback_list
+
 
 if __name__ == '__main__':
     # Example use cases
@@ -380,3 +446,6 @@ if __name__ == '__main__':
 
     print("======================")
     print(give_feedback_symbol_analysis('x+y+z', 'x+y'))
+
+    print("===========================")
+    print(give_feedback_unary_op('x + \sin(x)', 'y + \cos(x)'))
