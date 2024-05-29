@@ -24,12 +24,12 @@ function App() {
 
       //'https://deployed-backend-ra.onrender.com/get_score'
       const response = await fetch('http://127.0.0.1:8000/get_score', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    })
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
 
       // Check if request was successful
       if (response.ok) {
@@ -50,12 +50,12 @@ function App() {
     try {
       // Make GET request to API endpoint
       const response = await fetch('http://127.0.0.1:8000/get_feedback', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    })
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
       // Check if request was successful
       if (response.ok) {
         // Parse response JSON
@@ -86,6 +86,9 @@ function App() {
             <input name="second-equation" className="input-field" onChange={(e) => setSecondEquation(e.target.value)}></input>
             <button type="submit" className="submit-button">Similarity</button>
           </form>
+          <div>
+            <p>{feedback}</p>
+          </div>
         </div>
         <div className='Layout'>
           <div className='LatexBlock'>
