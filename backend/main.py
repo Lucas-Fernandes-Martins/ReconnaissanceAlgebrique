@@ -2,7 +2,7 @@ from urllib.request import Request
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from engine import get_score, give_feedback, give_feedback_symbol_analysis
+from engine import get_score, give_feedback, give_feedback_symbol_analysis, give_feedback_unary_op, simplify_latex_expression
 app = FastAPI()
 
 app.add_middleware(
@@ -49,14 +49,15 @@ async def receive_data(data: dict):
     return response
 
 @app.post("/get_feedback")
-async def receive_data(data: dict):
+async def give_feeback(data: dict):
     print(data)
     string1 = data['first_equation']
     string2 = data['second_equation']
     # Call the function with the provided input strings
-    feedback_signs = give_feedback(string1, string2)
+    feedback_signs = ""#give_feedback(string1, string2)
     feedback_symbol = give_feedback_symbol_analysis(string1, string2)
-    feedback = "Mistakes: \n" + "".join(feedback_signs) + "\n" + "".join(feedback_symbol)
+    feedback_unary_ops = give_feedback_unary_op(string1, string2)
+    feedback = "Mistakes: \n" + "".join(feedback_signs) + " \n " + "".join(feedback_symbol) + " \n\n " + "".join(feedback_unary_ops)
     # Create JSON response
     response = {'result': feedback}
     # Return JSON response
