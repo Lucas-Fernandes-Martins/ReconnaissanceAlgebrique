@@ -10,6 +10,7 @@
   /* Center the content horizontally */
   align-items: center;
   /* Center the content vertically */
+  flex-direction: column;
 }
 
 .form {
@@ -41,4 +42,31 @@
 
 .submit-button:hover {
   background-color: #0056b3;
+}
+
+.LatexBlock {
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white background */
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 10px;
+  padding: 100px;
+  margin-right: 30px;
+}
+
+.CircularProgressBarLayout {
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white background */
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.Layout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
