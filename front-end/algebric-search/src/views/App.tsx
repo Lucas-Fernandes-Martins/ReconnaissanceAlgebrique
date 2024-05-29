@@ -82,8 +82,8 @@ function App() {
       <div className="App">
         <div className="form">
           <form onSubmit={SubmitFunction}>
-            <input name="first-equation" className="input-field" onChange={(e) => setFirstEquation(e.target.value)}></input>
-            <input name="second-equation" className="input-field" onChange={(e) => setSecondEquation(e.target.value)}></input>
+            <input name="first-equation" className="input-field" placeholder="student answer" onChange={(e) => setFirstEquation(e.target.value)}></input>
+            <input name="second-equation" className="input-field" placeholder="correct answer" onChange={(e) => setSecondEquation(e.target.value)}></input>
             <button type="submit" className="submit-button">Similarity</button>
           </form>
           <div>
