@@ -280,6 +280,11 @@ def node_to_dict(node: Node):
     }
     return node_dict
 
+def dict_to_node(expr_dict: dict) -> Node:
+    """Convert a dictionary object into a Node"""
+    node = Node(expr_dict["type"],expr_dict["value"],[dict_to_node(child) for child in expr_dict["children"]] if expr_dict["children"] else [] ,expr_dict["subtype"])
+    return node
+
 def serialize_node_to_json(node):
     """
     Serializes a Node structure into a JSON string.
@@ -378,40 +383,148 @@ def generate_partial_dataset(size):
     """Wrapper function to generate a portion of the dataset."""
     return generate_expression_pairs(size)
 
-def parallel_dataset_generation(total_size, chunk_size=10, timeout=10, max_retries_per_chunk=2):
-    """Generates the dataset in parallel, handling timeouts and errors."""
+# def parallel_dataset_generation(total_size, chunk_size=10, timeout=10, max_retries_per_chunk=2):
+#     """Generates the dataset in parallel, handling timeouts and errors."""
+#     dataset = []
+#     futures = []
+#     retry_limit = max_retries_per_chunk  # Maximum number of retries per task
+#     retries = {}
+#     with ProcessPoolExecutor() as executor:
+#         # Submit tasks to generate chunks of the dataset in parallel
+#         for _ in range(0, total_size, chunk_size):
+#             futures.append(executor.submit(generate_partial_dataset, chunk_size))
+
+#         # Monitor futures and collect results
+#         for future in tqdm(as_completed(futures), total=len(futures)):
+#             try:
+#                 result = future.result(timeout=timeout)
+#                 dataset.extend(result)
+#             except TimeoutError:
+#                 if retries.get(future, 0) < retry_limit:
+#                     logging.info("Task exceeded the timeout limit, rescheduling...")
+#                     new_future = executor.submit(generate_partial_dataset, chunk_size)
+#                     futures.append(new_future)
+#                     retries[new_future] = retries.get(future, 0) + 1
+#                 else:
+#                     logging.warning("Task reached maximum retry limit.")
+#             except Exception as e:
+#                 logging.error(f"Task failed with exception: {e}.")
+
+#     return dataset
+
+import zmq
+
+
+def worker(task_id, chunk_size, address):
+    context = zmq.Context()
+    socket = context.socket(zmq.PAIR)
+    socket.connect(address)
+    
+    try:
+        # Simulate dataset generation (replace with actual function)
+        result = generate_partial_dataset(chunk_size)
+        socket.send_pyobj((task_id, result, None))  # Send result back to the main process
+    except Exception as e:
+        socket.send_pyobj((task_id, None, e))  # Send exception info back to the main process
+
+
+import multiprocessing
+import time
+import zmq
+import logging
+from tqdm import tqdm
+
+
+def parallel_dataset_generation(total_size, chunk_size=10, timeout=60*5, max_retries_per_chunk=2):
     dataset = []
-    futures = []
-    retry_limit = max_retries_per_chunk  # Maximum number of retries per task
+    task_id = 0
+    address = "tcp://127.0.0.1:5555"
     retries = {}
-    with ProcessPoolExecutor() as executor:
-        # Submit tasks to generate chunks of the dataset in parallel
-        for _ in range(0, total_size, chunk_size):
-            futures.append(executor.submit(generate_partial_dataset, chunk_size))
-
-        # Monitor futures and collect results
-        for future in tqdm(as_completed(futures), total=len(futures)):
-            try:
-                result = future.result(timeout=timeout)
-                dataset.extend(result)
-            except TimeoutError:
-                if retries.get(future, 0) < retry_limit:
-                    logging.info("Task exceeded the timeout limit, rescheduling...")
-                    new_future = executor.submit(generate_partial_dataset, chunk_size)
-                    futures.append(new_future)
-                    retries[new_future] = retries.get(future, 0) + 1
+    
+    context = zmq.Context()
+    socket = context.socket(zmq.PAIR)
+    socket.bind(address)
+    
+    processes = []
+    total_chunks = (total_size + chunk_size - 1) // chunk_size  # Ceiling division
+    with tqdm(total=total_chunks) as pbar:
+        for _ in range(total_chunks):
+            retries[task_id] = 0
+            process = multiprocessing.Process(target=worker, args=(task_id, chunk_size, address))
+            process.start()
+            processes.append((task_id, process, time.time()))
+            task_id += 1
+        
+        while processes:
+            new_processes = []
+            for task_id, process, start_time in processes:
+                if process.is_alive():
+                    if time.time() - start_time > timeout:
+                        process.terminate()
+                        logging.info(f"Task {task_id} exceeded the timeout limit, rescheduling...")
+                        if retries[task_id] < max_retries_per_chunk:
+                            retries[task_id] += 1
+                            new_process = multiprocessing.Process(target=worker, args=(task_id, chunk_size, address))
+                            new_process.start()
+                            new_processes.append((task_id, new_process, time.time()))
+                        else:
+                            logging.warning(f"Task {task_id} reached maximum retry limit.")
+                            pbar.update(1)
+                    else:
+                        new_processes.append((task_id, process, start_time))
                 else:
-                    logging.warning("Task reached maximum retry limit.")
-            except Exception as e:
-                logging.error(f"Task failed with exception: {e}.")
+                    pbar.update(1)
+            
+            while socket.poll(2000):  # Check for messages with a 2-second timeout
+                try:
+                    task_id, result, error = socket.recv_pyobj(zmq.NOBLOCK)
+                    if error:
+                        logging.error(f"Task {task_id} failed with exception: {error}")
+                    else:
+                        dataset.extend(result)
+                except zmq.Again:
+                    break
 
+            processes = new_processes
+            time.sleep(2)
+
+    socket.close()
+    context.term()
     return dataset
 
+
+def sequential_dataset_generation(total_size, chunk_size):
+    dataset = []
+    i = 0
+    with tqdm(total=total_size) as pbar:
+        while i < total_size:
+            try:
+                dataset.extend(generate_partial_dataset(chunk_size))
+                i+= chunk_size
+                pbar.update(chunk_size)
+                pbar.set_description("Processing...")
+            except Exception as e:
+                pbar.set_description("Reprocessing chunk #" + str(i//chunk_size)+ " ...")
+                continue
+    return dataset
+            
 if __name__ == "__main__":
-    desired_dataset_size = 8000
-    generated_dataset = parallel_dataset_generation(desired_dataset_size,  chunk_size=50)
-    with open("math_datagen_triplet.json", "w") as f:
-        json.dump(generated_dataset, f, indent=4)
+    import argparse
+    # parser = argparse.ArgumentParser(description='Generate dataset')
+    # parser.add_argument('--size', type=int, default=16000, help='Desired dataset size')
+    # parser.add_argument('--chunk_size', type=int, default=50, help='Chunk size')
+    # parser.add_argument('--output', type=str, required=True, help='Output file path')
+    # args = parser.parse_args()
+
+    # generated_dataset = parallel_dataset_generation(args.size, chunk_size=args.chunk_size)
+    # with open(args.output, "w") as f:
+    #     json.dump(generated_dataset, f, indent=4)
+    with open("math_datagen_triplet_40k.json", "r") as f:
+        data = json.load(f)
+        mathexpr = data[10]["expr_true"]
+        print(node_to_sympy(dict_to_node(mathexpr)))
+
+
 # import queue
 # import time
 # import signal
