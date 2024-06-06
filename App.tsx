@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Header from '../components/Header';
+import 'katex/dist/katex.min.css';
+import { BlockMath } from 'react-katex';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import ManageQuestions from './ManageQuestions';
 
@@ -11,11 +15,14 @@ interface Question {
 }
 
 function App() {
-  const [result, setResult] = useState<string>("");
-  const [feedback, setFeedback] = useState<string>("");
+  const [result, setResult] = useState(100);
+  const [feedback, setFeedback] = useState("");
+
   const [questions, setQuestions] = useState<Question[]>([]);
   const [selectedQuestionId, setSelectedQuestionId] = useState<number | null>(null);
   const [studentAnswer, setStudentAnswer] = useState<string>("");
+
+  const [submitted, setSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
     fetchQuestions();
@@ -34,13 +41,15 @@ function App() {
 
   const checkSimilarity = async () => {
     if (selectedQuestionId === null) {
-      setResult("Please select a question.");
+      setResult(0);
+      setFeedback("Please select a question.");
       return;
     }
 
     const selectedQuestion = questions.find(q => q.id === selectedQuestionId);
     if (!selectedQuestion) {
-      setResult("Selected question not found.");
+      setResult(0);
+      setFeedback("Selected question not found.");
       return;
     }
 
@@ -60,7 +69,7 @@ function App() {
 
       if (response.ok) {
         const data = await response.json();
-        setResult("Distance: " + data['result'][0]);
+        setResult(data['result'][0]);
       } else {
         console.log('Error: Unable to process request');
       }
@@ -97,7 +106,7 @@ function App() {
 
       if (response.ok) {
         const data = await response.json();
-        setFeedback("Feedback: " + data['result']);
+        setFeedback(data['result']);
       } else {
         console.log('Error: Unable to process request');
       }
@@ -108,6 +117,7 @@ function App() {
 
   const SubmitFunction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setSubmitted(true);
     checkSimilarity();
     getFeedback();
   };
@@ -128,6 +138,7 @@ function App() {
                 <label>
                   Select Question:
                   <select
+                    className="select-box"
                     value={selectedQuestionId ?? ""}
                     onChange={(e) => setSelectedQuestionId(Number(e.target.value))}
                   >
@@ -155,8 +166,17 @@ function App() {
               </form>
 
               <div className="result">
-                <p>{result}</p>
                 <p>{feedback}</p>
+                <div className='Layout'>
+                  <div className='LatexBlock'>
+                    {submitted && (
+                      <BlockMath>{questions.find(q => q.id === selectedQuestionId)?.answer}</BlockMath>
+                    )}
+                  </div>
+                  <div className='CircularProgressBarLayout'>
+                    <CircularProgressbar value={result} text={`${result}%`} />
+                  </div>
+                </div>
               </div>
 
               <div className="navigation">

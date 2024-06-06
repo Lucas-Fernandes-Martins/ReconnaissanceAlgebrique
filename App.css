@@ -1,0 +1,125 @@
+/* App.css */
+.App {
+  background-image: url('../assets/hero-bg.svg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  /* Ensure the container takes up the full height of the viewport */
+  display: flex;
+  justify-content: center;
+  /* Center the content horizontally */
+  align-items: center;
+  /* Center the content vertically */
+  flex-direction: column;
+}
+
+.form {
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white background */
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  /* Center the form elements horizontally */
+}
+
+.input-field {
+  margin: 10px;
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.CircularProgressBarLayout {
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Semi-transparent white background */
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.Layout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Add this to your existing App.css file */
+
+.navigation a {
+  color: black;
+  text-decoration: none;
+  padding: 10px;
+  font-size: 16px;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.navigation a:hover {
+  text-decoration: underline;
+}
+
+/* Add styles for the select box and options */
+
+.select-box {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.select-box option {
+  padding: 10px;
+  font-size: 16px;
+}
+
+/* Add styles for centering the content inside the box */
+
+.Layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.LatexBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.CircularProgressBarLayout {
+  width: 150px;
+  height: 150px;
+  margin-top: 20px;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

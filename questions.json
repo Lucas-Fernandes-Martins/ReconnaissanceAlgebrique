@@ -1,1 +1,32 @@
-[]
+[
+    {
+        "id": 1,
+        "question": "Solve for x: 2x + 5 = 15",
+        "answer": "x = 5"
+    },
+    {
+        "id": 2,
+        "question": "Find the derivative of f(x) = 3x^2 + 2x + 1",
+        "answer": "6x + 2"
+    },
+    {
+        "id": 3,
+        "question": "What is the value of the expression: (3 + 2) * (5 - 1)?",
+        "answer": "20"
+    },
+    {
+        "id": 4,
+        "question": "Solve for y: 3y - 4 = 2y + 6",
+        "answer": "10"
+    },
+    {
+        "id": 5,
+        "question": "If the area of a circle is 25π, what is the radius?",
+        "answer": "5"
+    },
+    {
+        "id": 6,
+        "question": "Evaluate the limit: lim (x -> 3) (x^2 - 9) / (x - 3)",
+        "answer": "6"
+    }
+]

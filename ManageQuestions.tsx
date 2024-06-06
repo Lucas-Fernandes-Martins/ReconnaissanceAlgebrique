@@ -78,7 +78,7 @@ function ManageQuestions({ onQuestionsUpdated }: ManageQuestionsProps) {
         <ul>
           {questions.map(question => (
             <li key={question.id}>
-              {question.question} - {question.answer}
+              {question.question}
               <button onClick={() => deleteQuestion(question.id)}>Delete</button>
             </li>
           ))}
